@@ -5,12 +5,14 @@
 
 	Grouping problem solution with the leader algorithm
 
-	main.hs: program's entry point
+	leader.hs: leader algorithm implementation
 --}
 
 -- Step 1: make the algorithm without I/O
 -- Step 2: implement command line I/O to the program
 -- Step 3: implement file I/O to the program
+
+import Points
 
 {--
 	Calculating the results
@@ -49,15 +51,8 @@ calculateGroups points limit = undefined
 
 	Output: the group's center of mass
 --}
-centerOfMass :: [[Float]] -> [[Integer]] -> [Float]
-centerOfMass points groups = undefined
-
-{--
-	Calculating the distance between two points
-
-	Inputs: the points that will be operated over
-
-	Output: the distance between the given points
---}
-pointDistance :: [Float] -> [Float] -> Float
-pointDistance a b = sqrt $ sum [(a!!i - b!!i) * (a!!i - b!!i) | i <- [0 .. length a - 1]]
+centerOfMass :: [[Float]] -> [Int] -> [Float]
+centerOfMass points group = [a / fromIntegral $ length group | a <- pointSum groupPoints]
+	where
+		indexes = [group !! i - 1 | i <- [0 .. length group - 1]]
+		groupPoints = [points !! i | i <- indexes]
