@@ -49,24 +49,25 @@ calculateSSE points groups = sum [sum [pointDistance (groupedPoints !! i !! j) (
 calculateGroups :: [[Float]] -> Float -> [[Int]]
 calculateGroups points limit = createGroups points limit 0 []
 
-{--
-    Auxiliar function that creates the groups list given it's current state
-
-    Inputs: the list of points, the limit distance, the current index that'd been analyzed
-    and the list of groups that's in construction
-
-    Output: the completed list of groups
---}
 createGroups :: [[Float]] -> Float -> Int -> [[Int]] -> [[Int]]
-createGroups points limit index [] = [[index + 1]] ++ createGroups points limit (index + 1) [[index + 1]] -- First recursion's "iteration"
-createGroups [] _ _ groups = groups -- Recursion's end condition
-createGroups points limit index groups = newGroups ++ createGroups (tail points) limit (index + 1) newGroups -- General case recursion
+createGroups points limit index [] = [[index + 1]] ++ createGroups points limit (index + 1) [[index + 1]]
+createGroups points limit index groups
+    | index < length points = newGroups ++ createGroups points limit (index + 1) newGroups
+    | otherwise = groups
     where
-        group = last groups -- Current group that is been analyzed
-        leader = points !! ((group !! 0) - 1) -- Getting the current group leader
-        point = points !! index -- Current point that's being analysed
-        dist = pointDistance leader point -- Calculating the distance between the leader and the current point
-        newGroups = if dist <= limit then init groups ++ [group ++ [index + 1]] else groups ++ [[index + 1]] -- New groups list
+        group = last groups -- Current group that's being built
+        leader = points !! ((group !! 0) - 1) -- Current group's leader
+        dist = pointDistance leader (points !! index) -- Calculating the distance between the current point and the group's leader
+        newGroups =
+            if dist <= limit
+                then (init groups) ++ [group ++ [index]]
+                else groups ++ [[index]]
+
+{--
+    Creating the groups recursivelly
+
+    Inputs: the list of points, the limit distance, the index that will be analyzed and the 
+--}
 
 {--
     Calculating the center of mass of a giving group
@@ -80,7 +81,7 @@ centerOfMass [] = []
 centerOfMass group = [i / toFloat (length group) | i <- pointsSummed]
     where
         pointsSummed = pointSum group
-        toFloat x = fromInteger $ toInteger x
+        toFloat = fromInteger . toInteger
 
 {--
     Gathering the points with the groups list
