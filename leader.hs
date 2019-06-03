@@ -12,6 +12,10 @@
 -- Step 2: implement command line I/O to the program
 -- Step 3: implement file I/O to the program
 
+module Leader(
+ calculateResults
+) where
+
 import Points
 
 {--
@@ -22,9 +26,10 @@ import Points
     Outputs: the sum of euclidian distances and the list of groups
 --}
 calculateResults :: [[Float]] -> Float -> (Float, [[Int]])
-calculateResults points limit = (calculateSSE points groups, groups)
+calculateResults points limit = (calculateSSE groups, indeces)
     where
-        groups = groupPoints (calculateGroups points limit)
+        groups  = calculateGroups points limit
+        indeces = [[i + j | j <- [0 .. length (groups !! i) - 1]] | i <- [0 .. length groups - 1]]
 
 {--
     Calculating the sum of euclidian distances
@@ -33,11 +38,10 @@ calculateResults points limit = (calculateSSE points groups, groups)
 
     Output: the sum of euclidian distances
 --}
-calculateSSE :: [[Float]] -> [[Int]] -> Float
-calculateSSE points groups = sum [sum [pointDistance (groupedPoints !! i !! j) (center i) ** 2 | j <- [0 .. length (groupedPoints !! i) - 1]] | i <- [0 .. length groupedPoints - 1]]
+calculateSSE :: [[[Float]]] -> Float
+calculateSSE groups = sum [sum [pointDistance (groups !! i !! j) (center i) ** 2 | j <- [0 .. length (groups !! i) - 1]] | i <- [0 .. length groups - 1]]
     where
-        groupedPoints = groupPoints points groups
-        center index = centerOfMass (groupedPoints !! index)
+        center index = centerOfMass (groups !! index)
 
 {--
     Calculating the groups
