@@ -14,7 +14,7 @@ module Reader(
 ) where
 
 parseInput :: String -> String -> ([[Float]], Float)
-parseInput pointsStr distStr = ([[0.0]], 0)
+parseInput pointsStr distStr = ([[0.0, 1.1]], 0)
 
 createOutput :: (Float, [[Int]]) -> (String, String)
-createOutput results = ("", "")
+createOutput (sse, groups) = (show sse, show groups)
