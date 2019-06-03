@@ -24,7 +24,7 @@ import Points
 calculateResults :: [[Float]] -> Float -> (Float, [[Int]])
 calculateResults points limit = (calculateSSE points groups, groups)
     where
-        groups = calculateGroups points limit
+        groups = groupPoints (calculateGroups points limit)
 
 {--
     Calculating the sum of euclidian distances
@@ -46,22 +46,12 @@ calculateSSE points groups = sum [sum [pointDistance (groupedPoints !! i !! j) (
 
     Output: the list of groups
 --}
-calculateGroups :: [[Float]] -> Float -> [[Int]]
-calculateGroups points limit = createGroups points limit 0 []
-
-createGroups :: [[Float]] -> Float -> Int -> [[Int]] -> [[Int]]
-createGroups points limit index [] = [[index + 1]] ++ createGroups points limit (index + 1) [[index + 1]]
-createGroups points limit index groups
-    | index < length points = newGroups ++ createGroups points limit (index + 1) newGroups
-    | otherwise = groups
+calculateGroups :: [[Float]] -> Float -> [[[Float]]]
+calculateGroups (point:points) limit = group : calculateGroups remainder limit
     where
-        group = last groups -- Current group that's being built
-        leader = points !! ((group !! 0) - 1) -- Current group's leader
-        dist = pointDistance leader (points !! index) -- Calculating the distance between the current point and the group's leader
-        newGroups =
-            if dist <= limit
-                then (init groups) ++ [group ++ [index]]
-                else groups ++ [[index]]
+        distance p = (pointDistance p point)
+        remainder = [p | p <- points, (distance p) > limit]
+        group = point : [p | p <- points, (distance p) <= limit]
 
 {--
     Creating the groups recursivelly
