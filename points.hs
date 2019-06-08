@@ -20,7 +20,7 @@ module Points(
 
     Output: the distance between the given points
 --}
-pointDistance :: [Float] -> [Float] -> Float
+pointDistance :: [Double] -> [Double] -> Double
 pointDistance a b = sqrt $ sum [(a !! i - b !! i) * (a !! i - b !! i) | i <- [0 .. length a - 1]]
 
 {--
@@ -30,6 +30,6 @@ pointDistance a b = sqrt $ sum [(a !! i - b !! i) * (a !! i - b !! i) | i <- [0 
 
     Output: the sum of the points
 --}
-pointSum :: [[Float]] -> [Float]
+pointSum :: [[Double]] -> [Double]
 pointSum [a, b] = [a !! i + b !! i | i <- [0 .. length a - 1]]
 pointSum points = pointSum [head points, pointSum $ tail points]

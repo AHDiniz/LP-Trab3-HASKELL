@@ -13,8 +13,9 @@ module Reader(
  createOutput
 ) where
 
-parseInput :: String -> String -> ([[Float]], Float)
-parseInput pointsStr distStr = ([[0.0, 1.1]], 0)
+parseInput :: String -> String -> ([[Double]], Double)
+parseInput pointsStr distStr = undefined
 
-createOutput :: (Float, [[Int]]) -> (String, String)
-createOutput (sse, groups) = (show sse, show groups)
+
+createOutput :: (Double, [[Int]]) -> (String, String)
+createOutput (sse, groups) = undefined

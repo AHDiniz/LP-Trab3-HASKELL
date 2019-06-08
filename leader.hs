@@ -25,7 +25,7 @@ import Points
 
     Outputs: the sum of euclidian distances and the list of groups
 --}
-calculateResults :: [[Float]] -> Float -> (Float, [[Int]])
+calculateResults :: [[Double]] -> Double -> (Double, [[Int]])
 calculateResults points limit = (calculateSSE groups, indeces)
     where
         groups  = calculateGroups points limit
@@ -38,10 +38,13 @@ calculateResults points limit = (calculateSSE groups, indeces)
 
     Output: the sum of euclidian distances
 --}
-calculateSSE :: [[[Float]]] -> Float
-calculateSSE groups = sum [sum [pointDistance (groups !! i !! j) (center i) ** 2 | j <- [0 .. length (groups !! i) - 1]] | i <- [0 .. length groups - 1]]
+calculateSSE :: [[[Double]]] -> Double
+calculateSSE groups =
+    sum [sum [dist (groups!!i!!j) i | j <- [0 .. length (groups!!i) - 1]]
+    | i <- [0 .. length groups - 1]]
     where
         center index = centerOfMass (groups !! index)
+        dist point index = (pointDistance point (center index)) ** 2
 
 {--
     Calculating the groups
@@ -50,12 +53,12 @@ calculateSSE groups = sum [sum [pointDistance (groups !! i !! j) (center i) ** 2
 
     Output: the list of groups
 --}
-calculateGroups :: [[Float]] -> Float -> [[[Float]]]
-calculateGroups (point:points) limit = group : calculateGroups remainder limit
+calculateGroups :: [[Double]] -> Double -> [[[Double]]]
+calculateGroups [] _ = []
+calculateGroups (point:points) limit =
+    group : calculateGroups [p | p <- points, (pointDistance p point) > limit] limit
     where
-        distance p = (pointDistance p point)
-        remainder = [p | p <- points, (distance p) > limit]
-        group = point : [p | p <- points, (distance p) <= limit]
+        group = point : [p | p <- points, (pointDistance p point) <= limit]
 
 {--
     Creating the groups recursivelly
@@ -70,12 +73,13 @@ calculateGroups (point:points) limit = group : calculateGroups remainder limit
 
     Output: the group's center of mass
 --}
-centerOfMass :: [[Float]] -> [Float]
+centerOfMass :: [[Double]] -> [Double]
 centerOfMass [] = []
-centerOfMass group = [i / toFloat (length group) | i <- pointsSummed]
+centerOfMass [x] = x
+centerOfMass group = [i / toDouble (length group) | i <- pointsSummed]
     where
         pointsSummed = pointSum group
-        toFloat = fromInteger . toInteger
+        toDouble = fromInteger . toInteger
 
 {--
     Gathering the points with the groups list
@@ -84,7 +88,7 @@ centerOfMass group = [i / toFloat (length group) | i <- pointsSummed]
 
     Output: the list of groups, where in each position that had an index now has a point
 --}
-groupPoints :: [[Float]] -> [[Int]] -> [[[Float]]]
+groupPoints :: [[Double]] -> [[Int]] -> [[[Double]]]
 groupPoints _ [] = []
 groupPoints points (g:groups) = [firstGroup] ++ groupPoints points groups
     where
