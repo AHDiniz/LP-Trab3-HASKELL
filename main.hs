@@ -19,6 +19,6 @@ main = do
     distStr <- readFile $ head $ tail args
     let (points, limit) = parseInput pointsStr distStr
     let (sse, groups) = calculateResults points limit
-    let (sseStr, groupsStr) = createOutput (sse, groups)
+    let (sseStr, groupsStr) = createOutput sse groups
     writeFile "results.txt" groupsStr
     writeFile "saida.txt" sseStr

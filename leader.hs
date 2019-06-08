@@ -17,6 +17,7 @@ module Leader(
 ) where
 
 import Points
+import Data.List
 
 {--
     Calculating the results
@@ -29,7 +30,7 @@ calculateResults :: [[Double]] -> Double -> (Double, [[Int]])
 calculateResults points limit = (calculateSSE groups, indeces)
     where
         groups  = calculateGroups points limit
-        indeces = [[i + j | j <- [0 .. length (groups !! i) - 1]] | i <- [0 .. length groups - 1]]
+        indeces = pointsToIndeces points groups
 
 {--
     Calculating the sum of euclidian distances
@@ -93,3 +94,25 @@ groupPoints _ [] = []
 groupPoints points (g:groups) = [firstGroup] ++ groupPoints points groups
     where
         firstGroup = [points !! (index - 1) | index <- g]
+
+{--
+    Converting a grouped points list into a grouped indeces list
+
+    Inputs: the original list of points and the list of grouped points
+
+    Output: the list of grouped indeces
+--}
+pointsToIndeces :: [[Double]] -> [[[Double]]] -> [[Int]]
+pointsToIndeces _ [] = []
+pointsToIndeces points grouped = indeces : pointsToIndeces points (tail grouped)
+    where
+        group = head grouped
+        indeces = [(unmaybeNum $ elemIndex point points) + 1 | point <- group]
+
+-- Auxiliar function to "unmaybe" numbers
+-- It's used in a context where m is never equal to Nothing
+unmaybeNum :: Maybe Int -> Int
+unmaybeNum m =
+    case m of
+        Nothing -> -1
+        Just x -> x
