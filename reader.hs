@@ -43,4 +43,4 @@ parseInput pointsStr distStr = (points, limit)
 createOutput :: Double -> [[Int]] -> (String, String)
 createOutput sse groups = (printf "%.4f\n" sse, groupsStr)
     where
-        groupsStr = unlines [unwords [show (groups !! i !! j) | j <- [0 .. length (groups!!i) - 1]] | i <- [0 .. length groups - 1]]
+        groupsStr = unlines [unwords [show point | point <- group] | group <- groups]
