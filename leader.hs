@@ -40,12 +40,9 @@ calculateResults points limit = (calculateSSE groups, indeces)
     Output: the sum of euclidian distances
 --}
 calculateSSE :: [[[Double]]] -> Double
-calculateSSE groups =
-    sum [sum [dist (groups!!i!!j) i | j <- [0 .. length (groups!!i) - 1]]
-    | i <- [0 .. length groups - 1]]
+calculateSSE groups = sum [groupSum group | group <- groups]
     where
-        center index = centerOfMass (groups !! index)
-        dist point index = (pointDistance point (center index)) ** 2
+        groupSum group = sum [(pointDistance point (centerOfMass group)) | point <- group]
 
 {--
     Calculating the groups
@@ -62,12 +59,6 @@ calculateGroups (point:points) limit =
         group = point : [p | p <- points, (pointDistance p point) <= limit]
 
 {--
-    Creating the groups recursivelly
-
-    Inputs: the list of points, the limit distance, the index that will be analyzed and the 
---}
-
-{--
     Calculating the center of mass of a giving group
 
     Inputs: the list of points, separated in the respective groups
@@ -81,19 +72,6 @@ centerOfMass group = [i / toDouble (length group) | i <- pointsSummed]
     where
         pointsSummed = pointSum group
         toDouble = fromInteger . toInteger
-
-{--
-    Gathering the points with the groups list
-
-    Inputs: the list of points and the list of groups
-
-    Output: the list of groups, where in each position that had an index now has a point
---}
-groupPoints :: [[Double]] -> [[Int]] -> [[[Double]]]
-groupPoints _ [] = []
-groupPoints points (g:groups) = [firstGroup] ++ groupPoints points groups
-    where
-        firstGroup = [points !! (index - 1) | index <- g]
 
 {--
     Converting a grouped points list into a grouped indeces list
