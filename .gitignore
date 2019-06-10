@@ -1,6 +1,6 @@
-*.txt
+results.txt
+saida.txt
 *.hi
 *.o
 main
 .vscode/
-baterias/
