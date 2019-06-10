@@ -37,8 +37,12 @@ calculateResults points limit = (calculateSSE groups, indeces)
 --}
 calculateSSE :: [[[Double]]] -> Double
 calculateSSE groups = sum [groupSum group | group <- groups]
+
+-- SSE calculation auxiliar function
+groupSum :: [[Double]] -> Double
+groupSum group = sum [(pointDistance point center) ** 2| point <- group]
     where
-        groupSum group = sum [(pointDistance point (centerOfMass group)) | point <- group]
+        center = centerOfMass group
 
 {--
     Calculating the groups

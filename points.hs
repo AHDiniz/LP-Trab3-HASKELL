@@ -21,7 +21,7 @@ module Points(
     Output: the distance between the given points
 --}
 pointDistance :: [Double] -> [Double] -> Double
-pointDistance a b = sqrt $ sum [(a !! i - b !! i) * (a !! i - b !! i) | i <- [0 .. length a - 1]]
+pointDistance a b = sqrt $ sum [(a !! i - b !! i) ** 2| i <- [0 .. length a - 1]]
 
 {--
     Adding multiple points
