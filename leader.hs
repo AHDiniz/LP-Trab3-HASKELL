@@ -8,10 +8,6 @@
     leader.hs: leader algorithm implementation
 --}
 
--- Step 1: make the algorithm without I/O
--- Step 2: implement command line I/O to the program
--- Step 3: implement file I/O to the program
-
 module Leader(
  calculateResults
 ) where
